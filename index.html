@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PuzzleQuest - Logic Puzzle Game</title>
+  <style>
+    /* style.css */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #app {
+      width: 90%;
+      max-width: 800px;
+      text-align: center;
+      animation: popIn 0.8s ease;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stats span {
+      margin: 0 10px;
+    }
+
+    button {
+      background-color: #00c6ff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 10px;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background-color: #0072ff;
+      transform: scale(1.05);
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      width: 60%;
+      transition: all 0.3s ease-in-out;
+      margin-top: 10px;
+    }
+
+    input[type="text"]:hover,
+    input[type="text"]:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 8px rgba(0, 198, 255, 0.6);
+    }
+
+    .puzzle-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      min-height: 150px;
+      animation: popIn 0.8s ease;
+      border: 1px solid #ffffff;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.1); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Header Section -->
+    <header class="game-header">
+      <h1>🧠 PuzzleQuest</h1>
+      <div class="stats">
+        <span id="level">Level: 1</span>
+        <span id="score">Score: 0</span>
+      </div>
+    </header>
+
+    <!-- Main Menu -->
+    <section class="menu-screen" id="menuScreen">
+      <h2>Welcome to CodeQuest</h2>
+      <button onclick="startGame()">Start Game</button>
+    </section>
+
+    <!-- Puzzle Screen -->
+    <section class="puzzle-screen hidden" id="puzzleScreen">
+      <h2 id="puzzleTitle">Puzzle #1</h2>
+      <div class="puzzle-box" id="puzzleBox">
+        <!-- Puzzle content will be injected here -->
+      </div>
+      <button onclick="submitAnswer()">Submit Answer</button>
+    </section>
+
+    <!-- Result Modal -->
+    <div class="modal hidden" id="resultModal">
+      <div class="modal-content">
+        <h3 id="resultText"></h3>
+        <button onclick="nextPuzzle()">Next Puzzle</button>
+      </div>
+    </div>
+
+    <!-- Thank You Modal -->
+    <div class="modal hidden" id="thankYouModal">
+      <div class="modal-content">
+        <h2>🎉 Thank You for Playing CodeQuest! 🎉</h2>
+        <p>Your final score: <strong id="finalScore"></strong></p>
+        <button onclick="restartGame()">Play Again</button>
+        <button onclick="backToMenu()">Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // script.js
+    let currentLevel = 1;
+    let score = 0;
+
+    const puzzles = [
+      {
+        title: "Hidden Treasure",
+        question: "The more you take, the more you leave behind. What am I?",
+        answer: "Footsteps",
+      },
+      {
+        title: "Up and Down",
+        question: "I go up but never come down. What am I?",
+        answer: "Age",
+      },
+      {
+        title: "Shape Riddle",
+        question: "What has a face and two hands but no arms or legs?",
+        answer: "Clock",
+      },
+      {
+        title: "Shadow Play",
+        question: "What follows you everywhere but never touches you?",
+        answer: "Shadow",
+      },
+      {
+        title: "Sound Puzzle",
+        question: "What can fill a room but takes up no space?",
+        answer: "Light",
+      },
+      {
+        title: "Silly Question",
+        question: "What has one eye but can't see?",
+        answer: "Needle",
+      },
+      {
+        title: "Weight Puzzle",
+        question: "Which is heavier: a kilogram of steel or a kilogram of feathers?",
+        answer: "Neither",
+      },
+      {
+        title: "Impossible Move",
+        question: "What can’t be used until it's broken?",
+        answer: "Egg",
+      },
+      {
+        title: "Sneaky Question",
+        question: "I’m always in front of you but can’t be seen. What am I?",
+        answer: "Future",
+      },
+    ];
+
+    function startGame() {
+      currentLevel = 1;
+      score = 0;
+      document.getElementById("level").innerText = `Level: ${currentLevel}`;
+      document.getElementById("score").innerText = `Score: ${score}`;
+      document.getElementById("menuScreen").classList.add("hidden");
+      document.getElementById("puzzleScreen").classList.remove("hidden");
+      loadPuzzle();
+    }
+
+    function loadPuzzle() {
+      const puzzle = puzzles[currentLevel - 1];
+      if (!puzzle) {
+        showThankYou();
+        return;
+      }
+
+      document.getElementById("puzzleTitle").innerText = `Puzzle #${currentLevel}: ${puzzle.title}`;
+      document.getElementById("puzzleBox").innerHTML = `
+        <p>${puzzle.question}</p>
+        <input type="text" id="userAnswer" style="border: 1px solid light blue" placeholder="Your answer" />
+      `;
+    }
+
+    function submitAnswer() {
+      const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
+      const puzzle = puzzles[currentLevel - 1];
+      const correctAnswer = puzzle.answer.toLowerCase();
+
+      if (correctAnswer.includes(userAnswer) || userAnswer.includes(correctAnswer)) {
+        score += 10;
+        document.getElementById("resultText").innerHTML = `✅ Correct!<br>Answer: <strong>${puzzle.answer}</strong>`;
+      } else {
+        document.getElementById("resultText").innerHTML = `❌ Incorrect.<br>Correct Answer: <strong>${puzzle.answer}</strong>`;
+      }
+
+      document.getElementById("resultModal").classList.remove("hidden");
+      document.getElementById("score").innerText = `Score: ${score}`;
+    }
+
+    function nextPuzzle() {
+      currentLevel++;
+      document.getElementById("level").innerText = `Level: ${currentLevel}`;
+      document.getElementById("resultModal").classList.add("hidden");
+      loadPuzzle();
+    }
+
+    function showThankYou() {
+      document.getElementById("puzzleScreen").classList.add("hidden");
+      document.getElementById("thankYouModal").classList.remove("hidden");
+      document.getElementById("finalScore").innerText = score;
+      document.getElementById("game-header").style.display = "none";
+    }
+
+    function restartGame() {
+      document.getElementById("thankYouModal").classList.add("hidden");
+      document.getElementById("game-header").style.display = "flex";
+      startGame();
+    }
+
+    function backToMenu() {
+      document.getElementById("thankYouModal").classList.add("hidden");
+      document.getElementById("menuScreen").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
