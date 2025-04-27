@@ -140,7 +140,7 @@
 <body>
   <div id="app">
     <!-- Header Section -->
-    <header class="game-header">
+    <header class="game-header" id="gameHeader">
       <h1>🧠 PuzzleQuest</h1>
       <div class="stats">
         <span id="level">Level: 1</span>
@@ -177,7 +177,6 @@
         <h2>🎉 Thank You for Playing CodeQuest! 🎉</h2>
         <p>Your final score: <strong id="finalScore"></strong></p>
         <button onclick="restartGame()">Play Again</button>
-        <button onclick="backToMenu()">Back to Menu</button>
       </div>
     </div>
   </div>
@@ -264,7 +263,7 @@
       const puzzle = puzzles[currentLevel - 1];
       const correctAnswer = puzzle.answer.toLowerCase();
 
-      if (correctAnswer.includes(userAnswer) || userAnswer.includes(correctAnswer)) {
+      if (userAnswer !== "" && (correctAnswer.includes(userAnswer) || userAnswer.includes(correctAnswer))) {
         score += 10;
         document.getElementById("resultText").innerHTML = `✅ Correct!<br>Answer: <strong>${puzzle.answer}</strong>`;
       } else {
@@ -286,19 +285,17 @@
       document.getElementById("puzzleScreen").classList.add("hidden");
       document.getElementById("thankYouModal").classList.remove("hidden");
       document.getElementById("finalScore").innerText = score;
-      document.getElementById("game-header").style.display = "none";
+      document.getElementById("gameHeader").classList.add("hidden");
     }
 
     function restartGame() {
       document.getElementById("thankYouModal").classList.add("hidden");
-      document.getElementById("game-header").style.display = "flex";
+      document.getElementById("gameHeader").classList.remove("hidden");
+
       startGame();
     }
 
-    function backToMenu() {
-      document.getElementById("thankYouModal").classList.add("hidden");
-      document.getElementById("menuScreen").classList.remove("hidden");
-    }
+    
   </script>
 </body>
 </html>
