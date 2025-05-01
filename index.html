@@ -7,10 +7,10 @@
   <style>
     /* style.css */
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
       margin: 0;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
+      background: linear-gradient(to right, #1b91c4, #6ea0b1, #b0bbc0);
+      color: #030303;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -22,6 +22,11 @@
       max-width: 800px;
       text-align: center;
       animation: popIn 0.8s ease;
+      border: 2px solid black;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px;
+      margin: 20px;
     }
 
     .game-header {
@@ -29,9 +34,10 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px;
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(230, 228, 228, 0.363);
       border-radius: 10px;
       margin-bottom: 20px;
+      border: 1px solid white;
     }
 
     .stats span {
@@ -39,7 +45,7 @@
     }
 
     button {
-      background-color: #00c6ff;
+      background-color: #0330f6;
       border: none;
       padding: 10px 20px;
       color: white;
@@ -52,8 +58,8 @@
     }
 
     button:hover {
-      background-color: #0072ff;
-      transform: scale(1.05);
+      background-color: #00d5ff;
+      transform: scale(1.09);
     }
 
     input[type="text"] {
@@ -74,13 +80,14 @@
     }
 
     .puzzle-box {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(237, 234, 234, 0.128);
       padding: 20px;
       margin: 20px auto;
       border-radius: 10px;
       min-height: 150px;
       animation: popIn 0.8s ease;
-      border: 1px solid #ffffff;
+      color: #030303;
+      font-weight: 500;
     }
 
     .modal {
@@ -96,11 +103,13 @@
     }
 
     .modal-content {
-      background: #1e1e1e;
+      background: #d4c5c5d2;
       padding: 30px;
       border-radius: 15px;
       text-align: center;
       animation: fadeIn 0.5s ease-in-out;
+      border: 1px solid white;
+      box-shadow: 0 0 5px white;
     }
 
     .hidden {
@@ -117,14 +126,18 @@
     }
 
     @media (max-width: 600px) {
+    #app {
+        margin: 25px;
+      }
     .game-header {
       flex-direction: column;
       gap: 10px;
       text-align: center;
+      padding: 20px;
     }
 
     .game-header h1 {
-      font-size: 1.8rem;
+      font-size: 1.4rem;
     }
 
     button {
@@ -133,6 +146,16 @@
 
     input[type="text"] {
       width: 90%;
+    }
+
+    .modal-content {
+      margin: 20px;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #030303;
+      font-weight: 700;
     }
   }
   </style>
@@ -150,7 +173,7 @@
 
     <!-- Main Menu -->
     <section class="menu-screen" id="menuScreen">
-      <h2>Welcome to CodeQuest</h2>
+      <h2>Welcome to PuzzleQuest✨</h2>
       <button onclick="startGame()">Start Game</button>
     </section>
 
@@ -254,7 +277,7 @@
       document.getElementById("puzzleTitle").innerText = `Puzzle #${currentLevel}: ${puzzle.title}`;
       document.getElementById("puzzleBox").innerHTML = `
         <p>${puzzle.question}</p>
-        <input type="text" id="userAnswer" style="border: 1px solid light blue" placeholder="Your answer" />
+        <input type="text" id="userAnswer" style="border: 1px solid black;" placeholder="Your answer" />
       `;
     }
 
